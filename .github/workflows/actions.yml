@@ -5,4 +5,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print to console
-        run: Hello World!!!
+        run: echo Hello World!!!
