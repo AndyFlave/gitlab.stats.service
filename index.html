@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Получите статистику для вашего репозитория в GitLab">
+  <meta name="keywords" content="GitLab, код, статистика, коммиты, строки кода, API GitLab">
+  <meta name="author" content="Andrey Shushunov">
+  <title>GitLab Metrics | Статистика кода и коммитов репозитория GitLab</title>
+
+  <style>
+    *, *:after, *:before {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      background-color: rgba(33,33,33, 1);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .container {
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    .main {
+      padding: 30px 0;
+    }
+
+    .main__navigation {
+      margin-bottom: 20px;
+    }
+
+    .main__loader {
+      margin: 50px auto;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: flex-end;
+      column-gap: 20px;
+    }
+
+    .navigation__unit {
+      display: grid;
+      gap: 5px;
+      color: #fff;
+    }
+
+    .navigation__btn {
+      margin-left: 30px;
+    }
+
+    input {
+      padding: 8px 15px;
+    }
+
+    table {
+      width: 100%;
+      background-color: #fff;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      width: 15%;
+      padding: 15px;
+      border: 1px solid;
+    }
+
+    .btn {
+      padding: 15px 15px 16px;
+      background-color: #42AB44;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .loader {
+      display: none;
+      border: 25px solid #f3f3f3;
+      border-top: 25px solid #42AB44;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+    }
+
+    .loader_active {
+      display: block;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .message {
+      padding: 30px;
+      color: #fff;
+      font-size: 42px;
+      text-align: center;
+    }
+
+
+    @media (max-width: 1023px) {
+      th, td {
+        width: auto;
+      }
+
+      .navigation {
+        flex-direction: column;
+        row-gap: 5px;
+      }
+
+      .navigation__unit {
+        gap: 2px;
+      }
+
+      .navigation__btn {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+
+      .table-wrapper {
+        overflow: auto;
+      }
+
+      .table {
+        width: 740px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+  ym(92514072, "init", {
+    clickmap:true,
+    trackLinks:true,
+    accurateTrackBounce:true,
+    webvisor:true
+  });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/92514072" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+  <main class="main">
+    <div class="container">
+
+      <form class="navigation main__navigation">
+        <label for="id-repo" class="navigation__unit">
+          <span>ID репозитория:</span>
+          <input type="number" id="id-repo" name="id-repo" required>
+        </label>
+
+        <label for="token" class="navigation__unit">
+          <span>Токен:</span>
+          <input type="text" id="token" name="token" required>
+        </label>
+
+        <label for="start-date" class="navigation__unit">
+          <span>Начальная дата:</span>
+          <input type="date" id="start-date" name="start-date" required>
+        </label>
+        
+        <label for="end-date" class="navigation__unit">
+          <span>Конечная дата:</span>
+          <input type="date" id="end-date" name="end-date" required>
+        </label>
+
+        <button type="submit" class="btn navigation__btn">Начать подсчёт</button>
+      </form>
+    
+      <div class="table-wrapper">
+        <table class="table">
+          <tr class="table__head">
+            <th>Автор</th>
+            <th>Количество коммитов</th>
+            <th>Cтрок кода добавлено</th>
+            <th>Cтрок кода удалено</th>
+          </tr>
+        </table>
+      </div>
+
+
+      <div class="loader main__loader"></div>
+
+      <p class="message" style="display: none">Ничего не нашлось...</p>
+    </div>
+  </main>
+
+  <script src="/script.js"></script>
+</body>
+</html>
